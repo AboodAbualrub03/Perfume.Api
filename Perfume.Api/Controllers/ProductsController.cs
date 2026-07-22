@@ -3,16 +3,17 @@ using Microsoft.AspNetCore.Mvc;
 using Perfume.Api.Dtos;
 using Perfume.Api.Services;
 
+using Microsoft.AspNetCore.Authorization;
 namespace Perfume.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductController : ControllerBase
+    public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
 
 
-        public ProductController(IProductService productService)
+        public ProductsController(IProductService productService)
         {
             _productService = productService;
         }
@@ -33,12 +34,14 @@ namespace Perfume.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(CreateProductDto dto)
         {
             var product = await _productService.CreateAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
         }
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
 
         public async Task<IActionResult> Update(CreateProductDto dto,int id )
 
@@ -50,6 +53,8 @@ namespace Perfume.Api.Controllers
             return NoContent();
         }
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> Delete(int id)
         {
             var removeProduct = await _productService.DeleteAsync(id);
